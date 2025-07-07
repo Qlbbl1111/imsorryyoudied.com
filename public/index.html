@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sorry You Died</title>
+  <style>
+    img { width: 320px; }
+    .person-card { text-align: center; font-family: sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    let today = new Date();
+    let month = String(today.getMonth() + 1).padStart(2,'0');
+    let day = String(today.getDate()).padStart(2,'0');
+    let url = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/deaths/${month}/${day}`;
+    async function getDeaths(){
+    let response = await fetch(url);
+    let obj = response.json().then(JSON.stringify).then((data) => {
+        fs.writeFile('/Users/qlbbl/Desktop/Code Stuff/Repositories/sorryyoudied.com/today.json', data, err => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log("done");
+        }
+        }) });
+    }
+    async function loadData() {
+      try {
+        const response = await fetch('/data');
+        const json = await response.json();
+        const deaths = json.deaths;
+
+        let randomEntry, page;
+        do {
+          randomEntry = deaths[Math.floor(Math.random() * deaths.length)];
+          page = randomEntry.pages.find(p => p.thumbnail?.source);
+        } while (!page);
+
+        const text = randomEntry.text;
+        const name = page.title.replace(/_/g, ' ');
+        const deathYear = randomEntry.year;
+        const thumbnail = page.thumbnail.source;
+        const birthMatch = text.match(/\(born (\d{4})\)/);
+        const birthYear = birthMatch ? birthMatch[1] : 'Unknown';
+
+        const html = `
+          <div class="person-card">
+            <h2>${name}</h2>
+            <img src="${thumbnail}" alt="${name}" />
+            <p>${birthYear} – ${deathYear}</p>
+          </div>
+        `;
+
+        document.getElementById('app').innerHTML = html;
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
