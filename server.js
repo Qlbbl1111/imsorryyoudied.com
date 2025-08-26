@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 
 const app = express();
 const PORT = 3000;
-const DATA_PATH = path.join(__dirname, 'today.json');
+const DATA_PATH = path.join(__dirname, '/var/www/imsorryyoudied.com/data/today.json');
 
 app.use(express.static('public')); // Serve index.html and frontend assets
 
