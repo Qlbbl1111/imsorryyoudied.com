@@ -19,7 +19,7 @@
     async function getDeaths(){
     let response = await fetch(url);
     let obj = response.json().then(JSON.stringify).then((data) => {
-        fs.writeFile('/Users/qlbbl/Desktop/Code Stuff/Repositories/sorryyoudied.com/today.json', data, err => {
+        fs.writeFile('today.json', data, err => {
         if (err) {
             console.error(err);
         } else {
